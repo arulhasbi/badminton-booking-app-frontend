@@ -96,6 +96,9 @@
             />
           </button>
         </div>
+        <div class="court-info-schedule">
+          <DatePicker />
+        </div>
       </div>
     </div>
   </div>
