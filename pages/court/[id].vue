@@ -111,7 +111,7 @@ export default {
   setup() {
     const route = useRoute();
     const { data, error } = useFetch(
-      `http://localhost:8080/fields/${route.params.id}`
+      `http://localhost:8080/courts/${route.params.id}`
     );
     return { data, error };
   },

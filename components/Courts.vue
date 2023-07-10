@@ -103,7 +103,7 @@ export default defineComponent({
     SwiperSlide,
   },
   setup() {
-    const { data, error } = useFetch("http://localhost:8080/fields");
+    const { data, error } = useFetch("http://localhost:8080/courts");
     const swiper = ref(null);
     const onSwiper = (swiperInstance) => {
       swiper.value = swiperInstance;
