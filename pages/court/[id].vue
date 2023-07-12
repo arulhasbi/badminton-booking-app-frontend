@@ -6,7 +6,7 @@
     <div class="court">
       <Gallery />
       <div class="court-info">
-        <div class="court-info-header px-5 py-5 rounded">
+        <div class="court-info-header pb-5 rounded">
           <h2 class="text-xl mb-2 font-medium">{{ courtData.name }}</h2>
           <div class="badges flex">
             <span

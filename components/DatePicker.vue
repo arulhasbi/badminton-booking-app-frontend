@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div>
     <VueDatePicker
       v-model="date"
       placeholder="Pilih tanggal booking"
