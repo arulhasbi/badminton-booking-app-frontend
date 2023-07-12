@@ -1,6 +1,6 @@
 <template>
-  <div class="grid gap-4 self-center">
-    <div class="card-css rounded-lg lg:h-64 overflow-hidden">
+  <div class="grid gap-4 self-start">
+    <div class="card-css rounded-lg overflow-hidden">
       <img
         class="h-full w-full object-cover"
         :src="selectedImage"
@@ -16,7 +16,7 @@
           left: `${x}px`,
           backgroundImage: `url(${selectedImage})`,
           backgroundPosition: `${bgX}% ${bgY}%`,
-          backgroundSize: `${width * scale}px ${height * scale * 1.5}px`,
+          backgroundSize: `${width * scale}px ${height * scale}px`,
         }"
       ></div>
     </div>
