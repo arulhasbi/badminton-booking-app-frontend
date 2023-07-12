@@ -3,53 +3,8 @@
   <div v-if="courtError">{{ error.message }}</div>
   <div v-else-if="!courtData">Loading...</div>
   <div v-else class="container mx-auto px-5">
-    <div class="gallery">
-      <div class="grid gap-4 self-center">
-        <div class="card-css rounded-lg">
-          <img
-            class="h-auto max-w-full rounded-lg"
-            src="https://flowbite.s3.amazonaws.com/docs/gallery/featured/image.jpg"
-            alt=""
-          />
-        </div>
-        <div class="grid grid-cols-5 gap-4">
-          <div class="card-css rounded-lg">
-            <img
-              class="h-auto max-w-full rounded-lg"
-              src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg"
-              alt=""
-            />
-          </div>
-          <div class="card-css rounded-lg">
-            <img
-              class="h-auto max-w-full rounded-lg"
-              src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg"
-              alt=""
-            />
-          </div>
-          <div class="card-css rounded-lg">
-            <img
-              class="h-auto max-w-full rounded-lg"
-              src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg"
-              alt=""
-            />
-          </div>
-          <div class="card-css rounded-lg">
-            <img
-              class="h-auto max-w-full rounded-lg"
-              src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg"
-              alt=""
-            />
-          </div>
-          <div class="card-css rounded-lg">
-            <img
-              class="h-auto max-w-full rounded-lg"
-              src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg"
-              alt=""
-            />
-          </div>
-        </div>
-      </div>
+    <div class="court">
+      <Gallery />
       <div class="court-info">
         <div class="court-info-header px-5 py-5 rounded">
           <h2 class="text-xl mb-2 font-medium">{{ courtData.name }}</h2>
@@ -74,28 +29,15 @@
               />
               {{ courtData.phoneNumber }}
             </span>
-          </div>
-        </div>
-        <!-- <div class="court-info-location">
-          <button
-            type="button"
-            class="hover:bg-gray-50 w-full text-gray-900 text-sm text-center flex items-center dark:focus:ring-gray-500 mr-2 bg-white px-5 py-1 mt-2 border border-gray-200 flex flex-row justify-between items-center rounded dark:bg-gray-700 dark:border-gray-500"
-          >
-            <div class="flex justify-center items-center">
+            <button type="button">
               <img
-                class="w-5 h-5 mr-5 -ml-1"
+                class="w-7 h-7 transform hover:-translate-y-0.5 active:translate-y-0.5 transition duration-100 ease-in-out"
                 src="~/assets/icons/google-maps-old-svgrepo-com.svg"
                 alt="Google Map"
               />
-              <span class="text-sm">Lihat lokasi di Google Map</span>
-            </div>
-            <img
-              class="w-7 h-7 -ml-1"
-              src="~/assets/icons/right-arrow-svgrepo-com.svg"
-              alt="Google Map"
-            />
-          </button>
-        </div> -->
+            </button>
+          </div>
+        </div>
         <div class="court-info-schedule">
           <div>
             <DatePicker

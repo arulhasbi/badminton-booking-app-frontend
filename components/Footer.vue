@@ -1,7 +1,9 @@
 <template>
   <footer
-    class="text-base container mx-auto px-5 my-5 flex justify-center my-10"
+    class="bg-gray-100 py-7 px-6 flex justify-center items-center fixed bottom-0 w-full relative z-10"
   >
-    <p>&copy; 2023. IndeptHustle</p>
+    <div class="text-gray-600 text-sm">
+      © 2023 IndeptHustle. All rights reserved.
+    </div>
   </footer>
 </template>

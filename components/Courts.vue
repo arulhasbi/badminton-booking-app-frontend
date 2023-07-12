@@ -68,7 +68,7 @@
             </NuxtLink>
             <button type="button">
               <img
-                class="w-10 h-10 mr-2 -ml-1"
+                class="w-10 h-10 mr-2 -ml-1 transform hover:-translate-y-0.5 active:translate-y-0.5 transition duration-100 ease-in-out"
                 src="~/assets/icons/google-maps-old-svgrepo-com.svg"
                 alt="Google Map"
               />
