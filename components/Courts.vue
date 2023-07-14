@@ -64,7 +64,12 @@
                 />Lihat lapangan
               </button>
             </NuxtLink>
-            <button type="button">
+            <button
+              type="button"
+              @click="
+                goToCourtLocation({ name: item.name, address: item.location })
+              "
+            >
               <img
                 class="w-10 h-10 mr-2 -ml-1 transform hover:-translate-y-0.5 active:translate-y-0.5 transition duration-100 ease-in-out"
                 src="~/assets/icons/google-maps-old-svgrepo-com.svg"
@@ -162,6 +167,16 @@ export default defineComponent({
       } catch (err) {
         this.error = err.message;
       }
+    },
+    goToCourtLocation(location) {
+      let name = location.name.replace(/ /g, "+");
+      let address = location.address.replace(/ /g, "+");
+      let url =
+        "https://www.google.com/maps/search/?api=1&query=" +
+        name +
+        "," +
+        address;
+      window.open(url, "_blank");
     },
     clickPage(page) {
       this.page = page;

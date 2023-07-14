@@ -29,7 +29,15 @@
               />
               {{ courtData.phoneNumber }}
             </span>
-            <button type="button">
+            <button
+              type="button"
+              @click="
+                goToCourtLocation({
+                  name: courtData.name,
+                  address: courtData.location,
+                })
+              "
+            >
               <img
                 class="w-7 h-7 transform hover:-translate-y-0.5 active:translate-y-0.5 transition duration-100 ease-in-out"
                 src="~/assets/icons/google-maps-old-svgrepo-com.svg"
@@ -85,6 +93,7 @@ export default {
     const { data: arenasData, error: arenasError } = useFetch(
       `http://localhost:8080/arenas/${route.params.id}`
     );
+    console.log(courtData);
     // arena events
     const handleArenaCleared = () => {
       bookData.value.arena = {};
@@ -127,6 +136,16 @@ export default {
     };
   },
   methods: {
+    goToCourtLocation(location) {
+      let name = location.name.replace(/ /g, "+");
+      let address = location.address.replace(/ /g, "+");
+      let url =
+        "https://www.google.com/maps/search/?api=1&query=" +
+        name +
+        "," +
+        address;
+      window.open(url, "_blank");
+    },
     formatCurrency(value) {
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
