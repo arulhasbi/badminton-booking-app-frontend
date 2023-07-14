@@ -1,12 +1,11 @@
 <template>
   <div class="container mx-auto px-5">
     <div v-if="error">{{ error.message }}</div>
-    <div v-else-if="!data">Loading...</div>
+    <div v-else-if="!courts">Loading...</div>
     <div v-else>
-      <span class="text-sm">Menampilkan <u>6</u> dari <b>20</b> lapangan</span>
       <div class="mt-3 cards-css">
         <div
-          v-for="item in data"
+          v-for="item in courts"
           :key="item._id"
           class="border rounded overflow-hidden px-4 card-css"
         >
@@ -45,7 +44,6 @@
               @swiper="onSwiper"
             >
               <swiper-slide
-                v-slot="{ isActive }"
                 v-for="(image, imageIndex) in item.imageUrl"
                 :key="imageIndex"
               >
@@ -76,13 +74,39 @@
           </div>
         </div>
       </div>
-      <div class="flex mt-4">
-        <a
-          href="#"
-          class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-          >Lihat lebih banyak lapangan</a
-        >
-      </div>
+      <nav aria-label="Page navigation" class="flex justify-center mt-6">
+        <ul class="inline-flex -space-x-px text-sm">
+          <li>
+            <a
+              type="button"
+              @click="prevPage"
+              :disabled="page <= 1"
+              class="hover:cursor-pointer flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >Sebelumnya</a
+            >
+          </li>
+          <li v-for="index in totalPages" :key="index">
+            <a
+              @click="clickPage(index)"
+              :class="{
+                'bg-slate-100': page === index,
+                'bg-white': page !== index,
+              }"
+              class="hover:cursor-pointer flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >{{ index }}</a
+            >
+          </li>
+          <li>
+            <a
+              type="button"
+              @click="nextPage"
+              :disabled="page >= totalPages"
+              class="hover:cursor-pointer flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+              >Selanjutnya</a
+            >
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </template>
@@ -102,20 +126,52 @@ export default defineComponent({
     Swiper,
     SwiperSlide,
   },
-  setup() {
-    const { data, error } = useFetch("http://localhost:8080/courts");
-    const swiper = ref(null);
-    const onSwiper = (swiperInstance) => {
-      swiper.value = swiperInstance;
-    };
+  data() {
     return {
-      data,
-      error,
-      onSwiper,
-      modules: [Navigation, Pagination, Scrollbar, A11y],
+      error: null,
+      courts: [],
+      page: 1,
+      totalPages: 0,
     };
   },
+  created() {
+    this.fetchCourts();
+  },
+  watch: {
+    page: {
+      handler() {
+        this.fetchCourts();
+      },
+      immediate: true,
+    },
+  },
   methods: {
+    async fetchCourts() {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/courts?page=${this.page}&limit=6`
+        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch courts data");
+        }
+        const data = await response.json();
+        this.courts = data.data;
+        this.totalPages = data.pages;
+        this.error = null;
+      } catch (err) {
+        this.error = err.message;
+      }
+    },
+    clickPage(page) {
+      this.page = page;
+    },
+    prevPage() {
+      if (this.page > 1) this.page -= 1;
+    },
+    nextPage() {
+      if (this.page < this.totalPages) this.page += 1;
+    },
     formatCurrency(value) {
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
@@ -124,6 +180,16 @@ export default defineComponent({
         maximumFractionDigits: 0,
       }).format(value);
     },
+  },
+  setup() {
+    const swiper = ref(null);
+    const onSwiper = (swiperInstance) => {
+      swiper.value = swiperInstance;
+    };
+    return {
+      onSwiper,
+      modules: [Navigation, Pagination, Scrollbar, A11y],
+    };
   },
 });
 </script>

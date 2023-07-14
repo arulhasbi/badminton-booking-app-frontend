@@ -4,7 +4,7 @@
   <div v-else-if="!courtData">Loading...</div>
   <div v-else class="container mx-auto px-5 flex flex-col flex-1">
     <div class="court flex-1">
-      <Gallery />
+      <Gallery :images="courtData.imageUrl" />
       <div class="court-info">
         <div class="court-info-header pb-5 rounded">
           <h2 class="text-xl mb-2 font-medium">{{ courtData.name }}</h2>

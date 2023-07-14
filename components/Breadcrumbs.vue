@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto px-5 mb-7">
     <nav
-      class="flex px-5 py-3 text-gray-700 border border-gray-200 rounded bg-gray-50 dark:bg-gray-800 dark:border-gray-700 w-fit"
+      class="flex py-3 text-gray-700 rounded bg-gray-100 dark:bg-gray-800 dark:border-gray-700 w-fit"
       aria-label="Breadcrumb"
     >
       <ol class="inline-flex items-center space-x-1 md:space-x-3">

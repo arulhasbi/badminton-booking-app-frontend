@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-5 mb-5">
+  <div class="container mx-auto px-5 mb-3">
     <button type="button" class="amazon-button-css px-5 py-2.5 text-sm">
       Daftar dan Masuk dengan
       <img
