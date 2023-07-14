@@ -10,7 +10,7 @@
           <h2 class="text-xl mb-2 font-medium">{{ courtData.name }}</h2>
           <div class="badges flex">
             <span
-              class="bg-yellow-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded mr-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500"
+              class="bg-green-300 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded mr-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500"
             >
               <img
                 class="w-3 h-3 mr-1"
@@ -25,7 +25,7 @@
               <img
                 class="w-3 h-3 mr-1"
                 src="~/assets/icons/phone-rounded-svgrepo-com.svg"
-                alt="Price Tag"
+                alt="Phone Number"
               />
               {{ courtData.phoneNumber }}
             </span>
@@ -93,7 +93,6 @@ export default {
     const { data: arenasData, error: arenasError } = useFetch(
       `http://localhost:8080/arenas/${route.params.id}`
     );
-    console.log(courtData);
     // arena events
     const handleArenaCleared = () => {
       bookData.value.arena = {};

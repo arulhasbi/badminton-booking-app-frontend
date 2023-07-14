@@ -69,6 +69,44 @@ export default defineComponent({
         return result;
       }
     });
+    const gapExists = (range1, range2) => {
+      // Extract end time of the first range and start time of the second range
+      const endTimeRange1 = range1.split(" - ")[1];
+      const startTimeRange2 = range2.split(" - ")[0];
+
+      // Convert times to Date objects for comparison
+      const endTimeDate = new Date(`1970-01-01T${endTimeRange1}:00`);
+      const startTimeDate = new Date(`1970-01-01T${startTimeRange2}:00`);
+
+      // If the start time of the second range is later than the end time of the first range, a gap exists
+      return startTimeDate.getTime() > endTimeDate.getTime();
+    };
+
+    const getSlotsToFill = (range1, range2) => {
+      // Extract end time of the first range and start time of the second range
+      const endTimeRange1 = range1.split(" - ")[1];
+      const startTimeRange2 = range2.split(" - ")[0];
+
+      // // Convert times to Date objects for comparison
+      const endTimeDate = new Date(`1970-01-01T${endTimeRange1}:00Z`);
+      const startTimeDate = new Date(`1970-01-01T${startTimeRange2}:00Z`);
+
+      // // Get all possible time slots
+      const allSlots = data.value.map((item) => item.hourRange);
+
+      // Filter the slots that fall between the end time of the first range and the start time of the second range
+      const slotsToFill = allSlots.filter((range) => {
+        const rangeStartTime = new Date(
+          `1970-01-01T${range.split(" - ")[0]}:00Z`
+        );
+        const rangeEndTime = new Date(
+          `1970-01-01T${range.split(" - ")[1]}:00Z`
+        );
+        return rangeEndTime > endTimeDate && rangeStartTime < startTimeDate;
+      });
+
+      return slotsToFill;
+    };
     const selectCell = (payload) => {
       if (selectedIds.value.includes(payload._id)) {
         selectedIds.value = selectedIds.value.filter(
@@ -76,6 +114,35 @@ export default defineComponent({
         );
       } else {
         selectedIds.value = [...selectedIds.value, payload._id];
+      }
+      // Sort selectedIds based on time
+      selectedIds.value.sort((a, b) => {
+        const aSlot = data.value.find((item) => item._id === a);
+        const bSlot = data.value.find((item) => item._id === b);
+        return aSlot.hourRange.localeCompare(bSlot.hourRange);
+      });
+      // Check for gaps and fill them
+      for (let i = 1; i < selectedIds.value.length; i++) {
+        const prevSlot = data.value.find(
+          (item) => item._id === selectedIds.value[i - 1]
+        );
+        const currSlot = data.value.find(
+          (item) => item._id === selectedIds.value[i]
+        );
+        if (gapExists(prevSlot.hourRange, currSlot.hourRange)) {
+          const slotsToFill = getSlotsToFill(
+            prevSlot.hourRange,
+            currSlot.hourRange
+          );
+          slotsToFill.forEach((slot) => {
+            const slotToFill = data.value.find(
+              (item) => item.hourRange === slot
+            );
+            if (slotToFill && !selectedIds.value.includes(slotToFill._id)) {
+              selectedIds.value.push(slotToFill._id);
+            }
+          });
+        }
       }
     };
     const isSelected = (id) => {
