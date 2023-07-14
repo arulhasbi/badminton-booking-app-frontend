@@ -3,7 +3,7 @@
     <div v-if="error">{{ error.message }}</div>
     <div v-else-if="!courts">Loading...</div>
     <div v-else>
-      <div class="mt-3 cards-css">
+      <div class="cards-css">
         <div
           v-for="item in courts"
           :key="item._id"
