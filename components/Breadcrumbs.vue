@@ -20,7 +20,35 @@
           Home</nuxt-link
         >
       </li>
-      <li v-if="$route.name === 'court-id'" aria-current="page">
+      <li
+        v-if="$route.name === 'court-id' || $route.name === 'court-checkout'"
+        aria-current="page"
+      >
+        <div class="flex items-center">
+          <svg
+            class="w-3 h-3 text-gray-400 mx-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 9 4-4-4-4"
+            />
+          </svg>
+          <nuxt-link
+            :to="`/court/${courtId}`"
+            class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400"
+          >
+            Lapangan
+          </nuxt-link>
+        </div>
+      </li>
+      <li v-if="$route.name === 'court-checkout'" aria-current="page">
         <div class="flex items-center">
           <svg
             class="w-3 h-3 text-gray-400 mx-1"
@@ -39,7 +67,7 @@
           </svg>
           <span
             class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400"
-            >Lapangan</span
+            >Checkout</span
           >
         </div>
       </li>
@@ -48,15 +76,13 @@
 </template>
 
 <script>
+import { useBookingStore } from "~/store/booking";
+
 export default {
-  props: ["supportData"],
-  computed: {
-    crumbs() {
-      const fullPath = this.$route.fullPath;
-      const params = fullPath.substring(1).split("/");
-      const crumbs = [];
-      return "";
-    },
+  setup() {
+    const bookingStore = useBookingStore();
+    const courtId = bookingStore.courtId;
+    return { courtId };
   },
 };
 </script>

@@ -140,6 +140,7 @@
 
         <div class="flex items-center">
           <input
+            v-model="termsAccepted"
             id="link-checkbox"
             type="checkbox"
             value=""
@@ -173,17 +174,18 @@ export default {
   setup() {
     const bookingStore = useBookingStore();
 
+    const termsAccepted = ref(false);
+
     // Access the data
     const bookingData = bookingStore.bookingData;
     const courtId = bookingStore.courtId;
     const courtInfo = bookingStore.courtInfo;
 
-    console.log(bookingData.time_slots);
-
     return {
       bookingData,
       courtId,
       courtInfo,
+      termsAccepted,
     };
   },
   methods: {
