@@ -27,28 +27,34 @@
           </tr>
         </tbody>
       </table>
-      <div
-        v-if="selectedIds.length > 0"
-        class="py-4 px-8 bg-white flex justify-between items-center"
-      >
-        <button
-          type="button"
-          class="text-white bg-[#050708] hover:bg-[#050708]/80 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#050708]/40 dark:focus:ring-gray-600"
-          @click="book"
-        >
-          <span> Booking lapangan </span>
-          <img
-            src="~/assets/icons/badminton-player.svg"
-            class="h-6 w-6 ml-3"
-            alt="Icon description"
-          />
-        </button>
-        <span
-          class="text-sm text-blue-500 hover:cursor-pointer hover:underline"
-          @click="removeAllSelectedIds"
-        >
-          Batalkan semua pilihan
-        </span>
+      <div v-if="selectedIds.length > 0" class="bg-white px-8">
+        <div class="flex py-4">
+          <span class="text-base"
+            >Total Bayar Sewa Lapangan: <b>{{ formatCurrency(totalRate) }} </b
+            >{{ " " }}({{ totalHours }} Jam)</span
+          >
+        </div>
+        <hr class="h-px bg-gray-200 border-0 dark:bg-gray-700" />
+        <div class="py-4 flex justify-between items-center">
+          <button
+            type="button"
+            class="text-white bg-[#050708] hover:bg-[#050708]/80 focus:ring-4 focus:outline-none focus:ring-[#050708]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#050708]/40 dark:focus:ring-gray-600"
+            @click="book"
+          >
+            <span> Booking lapangan </span>
+            <img
+              src="~/assets/icons/badminton-player.svg"
+              class="h-6 w-6 ml-3"
+              alt="Icon description"
+            />
+          </button>
+          <span
+            class="text-sm text-blue-500 hover:cursor-pointer hover:underline"
+            @click="removeAllSelectedIds"
+          >
+            Batalkan semua pilihan
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -56,7 +62,8 @@
 
 <script>
 export default defineComponent({
-  setup(_, { emit }) {
+  props: ["ratePerHour"],
+  setup(props, { emit }) {
     const { data, error } = useFetch("http://localhost:8080/time-slots");
     const selectedIds = ref([]);
     const columns = computed(() => {
@@ -87,20 +94,30 @@ export default defineComponent({
       const endTimeRange1 = range1.split(" - ")[1];
       const startTimeRange2 = range2.split(" - ")[0];
 
-      // // Convert times to Date objects for comparison
-      const endTimeDate = new Date(`1970-01-01T${endTimeRange1}:00Z`);
-      const startTimeDate = new Date(`1970-01-01T${startTimeRange2}:00Z`);
+      // Convert times to Date objects for comparison
+      const endTimeDate = new Date(
+        `1970-01-01T${endTimeRange1 === "00:00" ? "24:00" : endTimeRange1}:00Z`
+      );
+      const startTimeDate = new Date(
+        `1970-01-01T${
+          startTimeRange2 === "00:00" ? "24:00" : startTimeRange2
+        }:00Z`
+      );
 
-      // // Get all possible time slots
+      // Get all possible time slots
       const allSlots = data.value.map((item) => item.hourRange);
 
       // Filter the slots that fall between the end time of the first range and the start time of the second range
       const slotsToFill = allSlots.filter((range) => {
         const rangeStartTime = new Date(
-          `1970-01-01T${range.split(" - ")[0]}:00Z`
+          `1970-01-01T${
+            range.split(" - ")[0] === "00:00" ? "24:00" : range.split(" - ")[0]
+          }:00Z`
         );
         const rangeEndTime = new Date(
-          `1970-01-01T${range.split(" - ")[1]}:00Z`
+          `1970-01-01T${
+            range.split(" - ")[1] === "00:00" ? "24:00" : range.split(" - ")[1]
+          }:00Z`
         );
         return rangeEndTime > endTimeDate && rangeStartTime < startTimeDate;
       });
@@ -151,6 +168,12 @@ export default defineComponent({
     const removeAllSelectedIds = () => {
       selectedIds.value = [];
     };
+    const totalHours = computed(() => {
+      return selectedIds.value.length;
+    });
+    const totalRate = computed(() => {
+      return totalHours.value * props.ratePerHour;
+    });
     const book = () => {
       const selectedHourRanges = data.value.filter((item) =>
         selectedIds.value.includes(item._id)
@@ -166,7 +189,19 @@ export default defineComponent({
       selectedIds,
       removeAllSelectedIds,
       book,
+      totalRate,
+      totalHours,
     };
+  },
+  methods: {
+    formatCurrency(value) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      }).format(value);
+    },
   },
 });
 </script>

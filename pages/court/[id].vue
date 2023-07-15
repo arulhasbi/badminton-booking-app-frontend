@@ -66,7 +66,10 @@
             :disabled="!bookData.date"
           />
           <div v-if="arenaHasBeenSelected" class="mt-3">
-            <TimeSlots @booked="handleBookingProcess" />
+            <TimeSlots
+              :ratePerHour="courtData.rate"
+              @booked="handleBookingProcess"
+            />
           </div>
         </div>
       </div>
@@ -117,6 +120,7 @@ export default {
     const handleBookingProcess = (payload) => {
       // payload contains selected time slots
       bookData.value.time_slots = payload;
+      console.log(payload);
     };
 
     return {
