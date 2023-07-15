@@ -78,11 +78,13 @@
 </template>
 
 <script>
-import { useRoute } from "vue-router";
+import { useBookingStore } from "~/store/booking";
 
 export default {
   setup() {
     const route = useRoute();
+    const router = useRouter();
+    const bookingStore = useBookingStore();
     const clearFlag = ref(false);
     const arenaHasBeenSelected = ref(false);
     const bookData = ref({
@@ -120,7 +122,10 @@ export default {
     const handleBookingProcess = (payload) => {
       // payload contains selected time slots
       bookData.value.time_slots = payload;
-      console.log(payload);
+      bookingStore.setBookingData(bookData.value);
+      bookingStore.setCourtId(route.params.id);
+      // direct user to checkout page
+      router.push({ name: "court-checkout" });
     };
 
     return {

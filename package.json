@@ -17,8 +17,13 @@
     "tailwindcss": "^3.3.2"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.4.11",
     "@vuepic/vue-datepicker": "^5.4.0",
     "flowbite": "^1.7.0",
+    "pinia": "^2.1.4",
     "swiper": "^10.0.4"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
