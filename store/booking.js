@@ -5,6 +5,7 @@ export const useBookingStore = defineStore({
   state: () => ({
     bookingData: null,
     courtId: null,
+    courtInfo: null,
   }),
   actions: {
     setBookingData(data) {
@@ -12,6 +13,9 @@ export const useBookingStore = defineStore({
     },
     setCourtId(id) {
       this.courtId = id;
+    },
+    setCourtInfo(data) {
+      this.courtInfo = data;
     },
   },
 });

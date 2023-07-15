@@ -124,6 +124,12 @@ export default {
       bookData.value.time_slots = payload;
       bookingStore.setBookingData(bookData.value);
       bookingStore.setCourtId(route.params.id);
+      bookingStore.setCourtInfo({
+        name: courtData.value.name,
+        description: courtData.value.description,
+        rate: courtData.value.rate,
+        phoneNumber: courtData.value.phoneNumber,
+      });
       // direct user to checkout page
       router.push({ name: "court-checkout" });
     };
