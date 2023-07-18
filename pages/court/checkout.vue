@@ -107,7 +107,12 @@
           >
             <input
               type="text"
-              v-bind="field"
+              :value="fullName"
+              @input="
+                fullName = $event.target.value;
+                field.onChange($event);
+              "
+              @blur="field.onBlur"
               :class="[
                 'bg-gray-50 text-gray-900 text-sm rounded block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white',
                 meta.dirty && errorMessage
@@ -139,7 +144,12 @@
           >
             <input
               type="email"
-              v-bind="field"
+              :value="email"
+              @input="
+                email = $event.target.value;
+                field.onChange($event);
+              "
+              @blur="field.onBlur"
               :class="[
                 'bg-gray-50 text-gray-900 text-sm rounded block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white',
                 meta.dirty && errorMessage
@@ -171,7 +181,12 @@
           >
             <input
               type="text"
-              v-bind="field"
+              :value="whatsapp"
+              @input="
+                whatsapp = $event.target.value;
+                field.onChange($event);
+              "
+              @blur="field.onBlur"
               :class="[
                 'bg-gray-50 text-gray-900 text-sm rounded block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white',
                 meta.dirty && errorMessage
@@ -210,7 +225,13 @@
 
         <button
           type="submit"
-          class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          :disabled="!isFormValid"
+          :class="[
+            'w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center',
+            !isFormValid
+              ? 'bg-gray-500 dark:bg-gray-400'
+              : 'bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800',
+          ]"
         >
           Konfirmasi & Bayar
         </button>
@@ -241,22 +262,44 @@ export default {
   setup() {
     const bookingStore = useBookingStore();
 
+    const fullName = ref("");
+    const email = ref("");
+    const whatsapp = ref("");
     const termsAccepted = ref(false);
+
+    const isFormValid = computed(() => {
+      return (
+        fullName.value && email.value && whatsapp.value && termsAccepted.value
+      );
+    });
 
     // Access the data
     const bookingData = bookingStore.bookingData;
     const courtId = bookingStore.courtId;
     const courtInfo = bookingStore.courtInfo;
 
+    // Submit checkout data
+    const onSubmit = (value) => {
+      let checkoutData = value;
+      checkoutData.termsAccepted = termsAccepted.value;
+      checkoutData = JSON.stringify(checkoutData, null, 2);
+      console.log(checkoutData);
+    };
+
     return {
       bookingData,
       courtId,
       courtInfo,
+      fullName,
+      email,
+      whatsapp,
       termsAccepted,
+      isFormValid,
+      termsAccepted,
+      onSubmit,
     };
   },
   methods: {
-    onSubmit(value) {},
     formatCurrency(value) {
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
