@@ -1,5 +1,8 @@
 <template>
-  <div class="container mx-auto px-5 flex items-center flex-col flex-1">
+  <div
+    v-if="!loading"
+    class="container mx-auto px-5 flex items-center flex-col flex-1"
+  >
     <div>
       <Breadcrumbs />
     </div>
@@ -238,6 +241,9 @@
       </VeeForm>
     </div>
   </div>
+  <div v-else class="container mx-auto px-5 flex items-center flex-col flex-1">
+    <p>Loading...</p>
+  </div>
 </template>
 
 <script>
@@ -261,6 +267,39 @@ export default {
   },
   setup() {
     const bookingStore = useBookingStore();
+    const loading = ref(true);
+
+    onMounted(() => {
+      const storedBookingData = sessionStorage.getItem("bookingData");
+      const storedCourtId = sessionStorage.getItem("courtId");
+      const storedCourtInfo = sessionStorage.getItem("courtInfo");
+      if (storedBookingData && storedCourtId && storedCourtInfo) {
+        bookingStore.setBookingData(JSON.parse(storedBookingData));
+        bookingStore.setCourtId(storedCourtId);
+        bookingStore.setCourtInfo(JSON.parse(storedCourtInfo));
+      }
+      loading.value = false;
+    });
+
+    // Access the data
+    const bookingData = ref(bookingStore.bookingData);
+    const courtId = ref(bookingStore.courtId);
+    const courtInfo = ref(bookingStore.courtInfo);
+
+    watch(
+      [
+        () => bookingStore.bookingData,
+        () => bookingStore.courtId,
+        () => bookingStore.courtInfo,
+      ],
+      ([newBookingData, newCourtId, newCourtInfo]) => {
+        if (typeof window !== "undefined") {
+          bookingData.value = newBookingData;
+          courtId.value = newCourtId;
+          courtInfo.value = newCourtInfo;
+        }
+      }
+    );
 
     const fullName = ref("");
     const email = ref("");
@@ -273,17 +312,11 @@ export default {
       );
     });
 
-    // Access the data
-    const bookingData = bookingStore.bookingData;
-    const courtId = bookingStore.courtId;
-    const courtInfo = bookingStore.courtInfo;
-
     // Submit checkout data
     const onSubmit = (value) => {
       let checkoutData = value;
       checkoutData.termsAccepted = termsAccepted.value;
       checkoutData = JSON.stringify(checkoutData, null, 2);
-      console.log(checkoutData);
     };
 
     return {
@@ -297,6 +330,7 @@ export default {
       isFormValid,
       termsAccepted,
       onSubmit,
+      loading,
     };
   },
   methods: {

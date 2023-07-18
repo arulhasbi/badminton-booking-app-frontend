@@ -1,4 +1,3 @@
-// utils/form_rules.js
 import { defineRule } from "vee-validate";
 
 export function defineCustomRules() {
