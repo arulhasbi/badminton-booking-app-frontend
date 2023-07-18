@@ -6,7 +6,7 @@
     <div
       class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
     >
-      <form class="space-y-6" action="#">
+      <VeeForm class="space-y-6" @submit="onSubmit" v-slot="{ errors }">
         <div class="-mb-1.5">
           <h5
             class="text-lg font-medium text-gray-900 dark:text-white text-decoration underline"
@@ -98,14 +98,31 @@
             class="block mb-2 text-sm text-gray-900 dark:text-white"
             >Nama Lengkap</label
           >
-          <input
-            type="text"
-            name="name"
-            id="name"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-            placeholder="Masukkan nama"
-            required
-          />
+          <Field
+            id="full-name"
+            name="full-name"
+            rules="required"
+            validateOnInput
+            v-slot="{ field, errorMessage = '', meta = {} }"
+          >
+            <input
+              type="text"
+              v-bind="field"
+              :class="[
+                'bg-gray-50 text-gray-900 text-sm rounded block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white',
+                meta.dirty && errorMessage
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500',
+              ]"
+              placeholder="Masukkan nama"
+            />
+            <span
+              class="text-xs text-red-600"
+              v-if="meta.dirty && errorMessage"
+            >
+              Wajib diisi
+            </span>
+          </Field>
         </div>
         <div>
           <label
@@ -113,14 +130,31 @@
             class="block mb-2 text-sm text-gray-900 dark:text-white"
             >Email</label
           >
-          <input
-            type="email"
-            name="email"
+          <Field
             id="email"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-            placeholder="Masukkan email"
-            required
-          />
+            name="email"
+            rules="required|email"
+            validateOnInput
+            v-slot="{ field, errorMessage = '', meta = {} }"
+          >
+            <input
+              type="email"
+              v-bind="field"
+              :class="[
+                'bg-gray-50 text-gray-900 text-sm rounded block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white',
+                meta.dirty && errorMessage
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500',
+              ]"
+              placeholder="Masukkan email"
+            />
+            <span
+              class="text-xs text-red-600"
+              v-if="meta.dirty && errorMessage"
+            >
+              Wajib diisi
+            </span>
+          </Field>
         </div>
         <div>
           <label
@@ -128,14 +162,31 @@
             class="block mb-2 text-sm text-gray-900 dark:text-white"
             >Nomor Whatsapp (Pastikan nomor sudah benar dan aktif)
           </label>
-          <input
-            type="text"
-            name="phoneNumber"
-            id="phoneNumber"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-            placeholder="Masukkan nomor whatsapp"
-            required
-          />
+          <Field
+            id="whatsapp"
+            name="whatsapp"
+            rules="required|numeric|digits_between:11,13"
+            validateOnInput
+            v-slot="{ field, errorMessage = '', meta = {} }"
+          >
+            <input
+              type="text"
+              v-bind="field"
+              :class="[
+                'bg-gray-50 text-gray-900 text-sm rounded block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white',
+                meta.dirty && errorMessage
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500',
+              ]"
+              placeholder="Masukkan nomor whatsapp"
+            />
+            <span
+              class="text-xs text-red-600"
+              v-if="meta.dirty && errorMessage"
+            >
+              Wajib diisi
+            </span>
+          </Field>
         </div>
 
         <div class="flex items-center">
@@ -163,14 +214,30 @@
         >
           Konfirmasi & Bayar
         </button>
-      </form>
+      </VeeForm>
     </div>
   </div>
 </template>
 
 <script>
+import { defineCustomRules } from "~/utils/form_rules.js";
+import { Form as VeeForm, Field } from "vee-validate";
+import { required, email, numeric } from "@vee-validate/rules";
+import { defineRule } from "vee-validate";
 import { useBookingStore } from "~/store/booking";
+
+defineRule("required", required);
+defineRule("email", email);
+defineRule("numeric", numeric);
+
 export default {
+  components: {
+    VeeForm,
+    Field,
+  },
+  created() {
+    defineCustomRules();
+  },
   setup() {
     const bookingStore = useBookingStore();
 
@@ -189,6 +256,7 @@ export default {
     };
   },
   methods: {
+    onSubmit(value) {},
     formatCurrency(value) {
       return new Intl.NumberFormat("id-ID", {
         style: "currency",
