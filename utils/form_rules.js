@@ -14,5 +14,15 @@ export function defineCustomRules() {
 
     return true;
   });
-  // You can define other custom rules here as well
+
+  defineRule("strong_password", (value) => {
+    const strongPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    if (!strongPasswordRegex.test(value)) {
+      return "The password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.";
+    }
+
+    return true;
+  });
 }

@@ -1,8 +1,15 @@
 <template>
-  <div
-    v-if="!loading"
-    class="container mx-auto px-5 flex items-center flex-col flex-1"
-  >
+  <div class="container mx-auto px-5 flex items-center flex-col flex-1">
+    <div class="container mx-auto px-5 mb-3 flex items-end">
+      <button type="button" class="amazon-button-css px-5 py-2.5 text-sm">
+        Masuk dan Daftar
+        <!-- <img
+        class="w-4 h-4 ml-2"
+        src="~/assets/icons/google-color-svgrepo-com.svg"
+        alt="Google Sign In Logo"
+      /> -->
+      </button>
+    </div>
     <div>
       <Breadcrumbs />
     </div>
@@ -241,9 +248,6 @@
       </VeeForm>
     </div>
   </div>
-  <div v-else class="container mx-auto px-5 flex items-center flex-col flex-1">
-    <p>Loading...</p>
-  </div>
 </template>
 
 <script>
@@ -267,39 +271,11 @@ export default {
   },
   setup() {
     const bookingStore = useBookingStore();
-    const loading = ref(true);
-
-    onMounted(() => {
-      const storedBookingData = sessionStorage.getItem("bookingData");
-      const storedCourtId = sessionStorage.getItem("courtId");
-      const storedCourtInfo = sessionStorage.getItem("courtInfo");
-      if (storedBookingData && storedCourtId && storedCourtInfo) {
-        bookingStore.setBookingData(JSON.parse(storedBookingData));
-        bookingStore.setCourtId(storedCourtId);
-        bookingStore.setCourtInfo(JSON.parse(storedCourtInfo));
-      }
-      loading.value = false;
-    });
 
     // Access the data
     const bookingData = ref(bookingStore.bookingData);
     const courtId = ref(bookingStore.courtId);
     const courtInfo = ref(bookingStore.courtInfo);
-
-    watch(
-      [
-        () => bookingStore.bookingData,
-        () => bookingStore.courtId,
-        () => bookingStore.courtInfo,
-      ],
-      ([newBookingData, newCourtId, newCourtInfo]) => {
-        if (typeof window !== "undefined") {
-          bookingData.value = newBookingData;
-          courtId.value = newCourtId;
-          courtInfo.value = newCourtInfo;
-        }
-      }
-    );
 
     const fullName = ref("");
     const email = ref("");
@@ -330,7 +306,6 @@ export default {
       isFormValid,
       termsAccepted,
       onSubmit,
-      loading,
     };
   },
   methods: {
