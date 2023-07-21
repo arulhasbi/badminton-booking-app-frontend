@@ -1,9 +1,16 @@
 <template>
   <div class="container mx-auto px-5 flex items-center flex-col flex-1">
+    <div>
+      <Breadcrumbs />
+    </div>
     <div
       class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
     >
-      <VeeForm class="space-y-6" @submit="onSubmit" v-slot="{ errors }">
+      <VeeForm
+        class="space-y-6"
+        @submit="onSubmit"
+        v-slot="{ meta = {}, errorMessage = '' }"
+      >
         <h5 class="mb-2 text-lg font-medium text-gray-900 dark:text-white">
           Masuk
         </h5>
@@ -71,7 +78,7 @@
                   ? 'border-red-500 focus:ring-red-500'
                   : 'border-gray-300 focus:ring-blue-500',
               ]"
-              placeholder="Enter password"
+              placeholder="Masukkan password"
             />
             <span
               class="text-xs text-red-600"
@@ -86,8 +93,51 @@
               </ul>
             </span>
           </Field>
-        </div></VeeForm
-      >
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="flex items-start">
+            <div class="flex items-center h-5">
+              <input
+                id="remember"
+                aria-describedby="remember"
+                type="checkbox"
+                class="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                required=""
+              />
+            </div>
+            <div class="ml-3 text-sm">
+              <label for="remember" class="text-gray-500 dark:text-gray-300"
+                >Ingat saya</label
+              >
+            </div>
+          </div>
+          <a
+            href="#"
+            class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
+            >Lupa password?</a
+          >
+        </div>
+        <button
+          type="submit"
+          :disabled="!meta.valid"
+          :class="[
+            'w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center',
+            !meta.valid
+              ? 'bg-gray-500 dark:bg-gray-400'
+              : 'bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800',
+          ]"
+        >
+          Masuk
+        </button>
+        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+          Belum punya akun?
+          <a
+            href="#"
+            class="font-medium text-primary-600 hover:underline dark:text-primary-500"
+            >Daftar sekarang</a
+          >
+        </p>
+      </VeeForm>
     </div>
   </div>
 </template>

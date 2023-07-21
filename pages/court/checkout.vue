@@ -304,7 +304,6 @@ export default {
       whatsapp,
       termsAccepted,
       isFormValid,
-      termsAccepted,
       onSubmit,
     };
   },
