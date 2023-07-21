@@ -164,6 +164,43 @@
             </span>
           </Field>
         </div>
+        <div>
+          <label
+            for="password-confirmation"
+            class="block mb-2 text-sm text-gray-900 dark:text-white"
+            >Konfirmasi Password</label
+          >
+          <Field
+            id="password-confirmation"
+            name="password-confirmation"
+            :rules="`required|same_as:${password}`"
+            validateOnInput
+            v-slot="{ field, errorMessage = '', meta = {} }"
+          >
+            <input
+              type="password"
+              :value="passwordConfirmation"
+              @input="
+                passwordConfirmation = $event.target.value;
+                field.onChange($event);
+              "
+              @blur="field.onBlur"
+              :class="[
+                'bg-gray-50 text-gray-900 text-sm rounded block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white',
+                meta.dirty && errorMessage
+                  ? 'border-red-500 focus:ring-red-500'
+                  : 'border-gray-300 focus:ring-blue-500',
+              ]"
+              placeholder="Masukkan konfirmasi password"
+            />
+            <span
+              class="text-xs text-red-600"
+              v-if="meta.dirty && errorMessage"
+            >
+              * Wajib sama dengan password
+            </span>
+          </Field>
+        </div>
         <button
           type="submit"
           :disabled="!meta.valid"
@@ -224,10 +261,11 @@ export default defineComponent({
     const email = ref("");
     const whatsapp = ref("");
     const password = ref("");
+    const passwordConfirmation = ref("");
 
     const onSubmit = (value) => {
       let loginData = value;
-      logoutData = JSON.stringify(loginData);
+      loginData = JSON.stringify(loginData);
     };
 
     return {
@@ -236,6 +274,7 @@ export default defineComponent({
       onSubmit,
       fullName,
       whatsapp,
+      passwordConfirmation,
     };
   },
 });
