@@ -6,11 +6,7 @@
     <div
       class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700"
     >
-      <VeeForm
-        class="space-y-6"
-        @submit="onSubmit"
-        v-slot="{ meta = {}, errorMessage = '' }"
-      >
+      <VeeForm class="space-y-6" @submit="onSubmit" v-slot="{ meta = {} }">
         <h5 class="mb-2 text-lg font-medium text-gray-900 dark:text-white">
           Masuk
         </h5>
@@ -43,12 +39,6 @@
               ]"
               placeholder="Masukkan email"
             />
-            <span
-              class="text-xs text-red-600"
-              v-if="meta.dirty && errorMessage"
-            >
-              * Wajib diisi (contoh: john.doe@gmail.com)
-            </span>
           </Field>
         </div>
         <div>
@@ -80,18 +70,6 @@
               ]"
               placeholder="Masukkan password"
             />
-            <span
-              class="text-xs text-red-600"
-              v-if="meta.dirty && errorMessage"
-            >
-              <ul class="mt-1.5">
-                <li>* Lebih dari 7 huruf.</li>
-                <li>* 1 atau lebih huruf kapital.</li>
-                <li>* 1 atau lebih huruf kecil.</li>
-                <li>* 1 atau lebih angka.</li>
-                <li>* 1 atau lebih karakter spesial (!,@,#, dll.)</li>
-              </ul>
-            </span>
           </Field>
         </div>
         <div class="flex items-center justify-between">
@@ -118,6 +96,7 @@
           >
         </div>
         <button
+          v-if="!isSubmitting"
           type="submit"
           :disabled="!meta.valid"
           :class="[
@@ -129,6 +108,7 @@
         >
           Masuk
         </button>
+        <LoadingSpinner v-if="isSubmitting" />
         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
           Belum punya akun?
           <NuxtLink
@@ -138,7 +118,17 @@
           >
         </p>
       </VeeForm>
-      <div class="inline-flex items-center justify-center w-full">
+      <div class="login-info mt-6">
+        <p v-if="errorMessage" class="flex items-center gap-1.5">
+          <img
+            class="w-4 h-4"
+            src="~/assets/icons/information-red.svg"
+            alt="Price Tag"
+          />
+          <span class="text-sm text-red-600"> {{ errorMessage }} </span>
+        </p>
+      </div>
+      <!-- <div class="inline-flex items-center justify-center w-full">
         <hr class="w-64 h-px my-8 bg-gray-200 border-0 dark:bg-gray-700" />
         <span
           class="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2 dark:text-white dark:bg-gray-900"
@@ -157,12 +147,14 @@
             alt="Google Sign In Logo"
           />
         </button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
+import { userAuthStore } from "~/store/auth";
+
 import { defineCustomRules } from "~/utils/form_rules.js";
 import { Form as VeeForm, Field } from "vee-validate";
 import { required, email, numeric } from "@vee-validate/rules";
@@ -181,18 +173,40 @@ export default defineComponent({
     defineCustomRules();
   },
   setup() {
+    const router = useRouter();
+    const authStore = userAuthStore();
     const email = ref("");
     const password = ref("");
+    const errorMessage = ref("");
+    const isSubmitting = ref(false);
 
-    const onSubmit = (value) => {
-      let loginData = value;
-      loginData = JSON.stringify(loginData);
+    definePageMeta({
+      middleware: ["auth"],
+    });
+
+    const onSubmit = async (values) => {
+      try {
+        isSubmitting.value = true;
+        errorMessage.value = "";
+        await authStore.login(values);
+        router.push("/");
+      } catch (error) {
+        if (error.message) {
+          errorMessage.value = error.message;
+        } else {
+          errorMessage.value = "Terjadi kesalahan. Silakan coba lagi.";
+        }
+      } finally {
+        isSubmitting.value = false;
+      }
     };
 
     return {
       email,
       password,
       onSubmit,
+      errorMessage,
+      isSubmitting,
     };
   },
 });

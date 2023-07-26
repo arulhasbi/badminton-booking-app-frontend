@@ -1,16 +1,12 @@
-import { useUserOnBoardingStore } from "~/store/userOnBoarding";
+import { userAuthStore } from "~/store/auth";
 
 export default function (to, from) {
-  const userOnBoardingStore = useUserOnBoardingStore();
-  if (
-    to.path.startsWith("/check-email") ||
-    to.path.startsWith("/verified-email") ||
-    to.path.startsWith("/verification-failed")
-  ) {
-    if (!userOnBoardingStore.justRegistered) {
+  const authStore = userAuthStore();
+  if (to.path.startsWith("/check-email")) {
+    if (!authStore.justRegistered) {
       return navigateTo("/login");
     } else {
-      userOnBoardingStore.setJustRegistered(false);
+      authStore.setJustRegistered(false);
     }
   }
 }
